@@ -87,7 +87,7 @@ Neovim is a Vim-based text editor engineered for extensibility and usability, to
 > nvim /path/to/file
 
 > [!TIP]
-> Contains also plugins for autosuggestion/autocompletition in
+> Contains also plugins for autosuggestion/autocompletition/highlighting in
 >
 > ```
 > ~/.config.nvim/lua/plugins/
