@@ -90,9 +90,9 @@ Neovim is a Vim-based text editor engineered for extensibility and usability, to
 > Contains also plugins for autosuggestion/autocompletition in
 >
 > ```
-> ~/.config.nvim/lua/plugins/autosuggestion.lua
+> ~/.config.nvim/lua/plugins/
 > ```
->`cmp-nvim-lsp`, `cmp-bufer`, `cmp-path`, `cmp-cmdline`, `cmp_luasnip`, `LuaSnip`, `friendly-snippets`, `lspkind-nvim` which you can modify by yourself
+>`cmp-nvim`, `lsp-nvim`, `treesitter-nvim` which you can modify by yourself
 
 > [!IMPORTANT]
 > Plugin manager for nvim:Lazy
