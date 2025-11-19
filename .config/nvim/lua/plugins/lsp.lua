@@ -5,7 +5,6 @@ return {
   { "rcarriga/nvim-dap-ui", enabled = false },
   { "jay-babu/mason-nvim-dap.nvim", enabled = false },
 
-  -- ✔ Вмикаємо твою нову LSP систему з нуля
   {
     "williamboman/mason.nvim",
     build = ":MasonUpdate",
@@ -42,4 +41,5 @@ return {
     end,
   },
 }
+
 
