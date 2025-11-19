@@ -92,7 +92,7 @@ Neovim is a Vim-based text editor engineered for extensibility and usability, to
 > ```
 > ~/.config.nvim/lua/plugins/
 > ```
->`cmp-nvim` - (cmp.lua), `lsp-nvim` - (lsp.lua), `treesitter-nvim` - (trstr.lua) which you can modify by yourself
+>`cmp-nvim` - (cmp.lua), `lsp-nvim` - (lsp.lua), `treesitter-nvim` - (treesitter.lua) which you can modify by yourself
 
 > [!IMPORTANT]
 > Plugin manager for nvim:Lazy
