@@ -19,11 +19,9 @@ return {
 
       require("luasnip.loaders.from_vscode").lazy_load()
 
-      local has_words_before = function()
-        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-        return col ~= 0
-          and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]
-          :sub(col, col):match("%s") == nil
+      local function check_backspace()
+        local col = vim.fn.col(".") - 1
+        return col == 0 or vim.fn.getline("."):sub(col, col):match("%s")
       end
 
       cmp.setup({
@@ -43,11 +41,11 @@ return {
             mode = "symbol_text",
             maxwidth = 60,
             ellipsis_char = "...",
-            symbol_map = { Copilot = "" },
           }),
         },
 
         mapping = cmp.mapping.preset.insert({
+
           ["<CR>"] = cmp.mapping.confirm({ select = true }),
 
           ["<Tab>"] = function(fallback)
@@ -55,10 +53,10 @@ return {
               cmp.select_next_item()
             elseif luasnip.expand_or_jumpable() then
               luasnip.expand_or_jump()
-            elseif has_words_before() then
-              cmp.complete()
+            elseif check_backspace() then
+              fallback() -- нормальний TAB-відступ
             else
-              fallback()
+              cmp.complete()
             end
           end,
 
@@ -85,24 +83,23 @@ return {
         },
       })
 
-      --- cmdline (`:`, `/`)
       cmp.setup.cmdline("/", {
         mapping = cmp.mapping.preset.cmdline(),
-        sources = { { name = "buffer" } },
+        sources = {
+          { name = "buffer" },
+        },
       })
 
       cmp.setup.cmdline(":", {
         mapping = cmp.mapping.preset.cmdline(),
-        sources = cmp.config.sources({
-          { name = "path" },
-        }, {
-          { name = "cmdline" },
-        }),
+        sources = cmp.config.sources(
+          { { name = "path" } },
+          { { name = "cmdline" } }
+        ),
       })
     end,
   },
 
-  -- autopairs sync
   {
     "windwp/nvim-autopairs",
     event = "InsertEnter",
