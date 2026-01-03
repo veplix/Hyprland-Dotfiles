@@ -109,7 +109,7 @@ fi
 
 			#DEPENDENCIES
 
-paru -S firefox telegram-desktop rofi waybar nemo alacritty grim slurp neovim swaync nerd-fonts hyprlock hyprpaper ttf-jetbrains-mono ttf-fira-code qt6-5compat fzf ueberzugpp imagemagick libnotify jq chafa vlc qbittorent wl-clipboard engrampa nwg-look peaclock cava pavucontrol nvtop fastfetch gtk2 gtk3 gtk4 font-manager discord cmake gcc make nodejs bibata-cursor-theme-bin dotnet-sdk
+paru -S firefox telegram-desktop rofi waybar nemo alacritty grim slurp unzip neovim swaync nerd-fonts hyprlock hyprpaper ttf-jetbrains-mono ttf-fira-code qt6-5compat fzf ueberzugpp imagemagick libnotify jq chafa vlc qbittorent wl-clipboard engrampa nwg-look peaclock cava pavucontrol nvtop fastfetch gtk2 gtk3 gtk4 font-manager discord cmake gcc make nodejs bibata-cursor-theme-bin dotnet-sdk
 
 
 			#GRUB THEME
