@@ -32,7 +32,6 @@ return {
           end,
         },
 
-        -- ✅ Bordered windows (SAFE)
         window = {
           completion = cmp.config.window.bordered({
             border = "rounded",
@@ -53,7 +52,6 @@ return {
           }),
         },
 
-        -- ✅ KEYMAPS (ESC FIXED)
         mapping = cmp.mapping.preset.insert({
 
           ["<CR>"] = cmp.mapping.confirm({
@@ -61,7 +59,6 @@ return {
             select = false,
           }),
 
-          -- ✅ PERFECT ESC (NO BORDER BUG)
           ["<Esc>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.close()
@@ -75,7 +72,6 @@ return {
           ["<C-b>"] = cmp.mapping.scroll_docs(-4),
           ["<C-f>"] = cmp.mapping.scroll_docs(4),
 
-          -- ✅ TAB + SNIPPETS (CLEAN)
           ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
@@ -113,7 +109,6 @@ return {
         },
       })
 
-      -- `/` search
       cmp.setup.cmdline({ "/", "?" }, {
         mapping = cmp.mapping.preset.cmdline(),
         sources = {
@@ -121,7 +116,6 @@ return {
         },
       })
 
-      -- `:` command line
       cmp.setup.cmdline(":", {
         mapping = cmp.mapping.preset.cmdline(),
         sources = cmp.config.sources({
@@ -133,7 +127,6 @@ return {
     end,
   },
 
-  -- ✅ AUTOPAIRS (SAFE WITH CMP)
   {
     "windwp/nvim-autopairs",
     event = "InsertEnter",
