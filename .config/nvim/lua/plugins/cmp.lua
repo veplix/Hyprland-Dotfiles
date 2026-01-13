@@ -75,8 +75,6 @@ return {
           ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
-            elseif luasnip.expand_or_jumpable() then
-              luasnip.expand_or_jump()
             else
               fallback()
             end
@@ -85,8 +83,6 @@ return {
           ["<S-Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_prev_item()
-            elseif luasnip.jumpable(-1) then
-              luasnip.jump(-1)
             else
               fallback()
             end
@@ -132,13 +128,13 @@ return {
     event = "InsertEnter",
     dependencies = { "nvim-cmp" },
     config = function()
-      local autopairs = require("nvim-autopairs")
-      autopairs.setup({})
+      require("nvim-autopairs").setup({})
 
       local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-      local cmp = require("cmp")
-
-      cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+      require("cmp").event:on(
+        "confirm_done",
+        cmp_autopairs.on_confirm_done()
+      )
     end,
   },
 }
