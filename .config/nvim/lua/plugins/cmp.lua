@@ -43,6 +43,8 @@ return {
           }),
         },
 
+
+
         formatting = {
           fields = { "abbr", "kind" },
           format = lspkind.cmp_format({
@@ -55,7 +57,7 @@ return {
         mapping = cmp.mapping.preset.insert({
 
           ["<CR>"] = cmp.mapping.confirm({
-            behavior = cmp.ConfirmBehavior.Replace,
+            behavior = cmp.ConfirmBehavior.Insert,
             select = false,
           }),
 
@@ -74,7 +76,7 @@ return {
 
           ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
-              cmp.select_next_item()
+              cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
             else
               fallback()
             end
@@ -82,7 +84,7 @@ return {
 
           ["<S-Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
-              cmp.select_prev_item()
+              cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
             else
               fallback()
             end
@@ -101,19 +103,29 @@ return {
         },
 
         experimental = {
-          ghost_text = true,
+          ghost_text = false,
         },
       })
 
       cmp.setup.cmdline({ "/", "?" }, {
-        mapping = cmp.mapping.preset.cmdline(),
+        mapping = cmp.mapping.preset.cmdline({
+          ["<Down>"] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }) },
+          ["<Up>"] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }) },
+          ["<Tab>"] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }) },
+          ["<S-Tab>"] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }) },
+        }),
         sources = {
           { name = "buffer" },
         },
       })
 
       cmp.setup.cmdline(":", {
-        mapping = cmp.mapping.preset.cmdline(),
+        mapping = cmp.mapping.preset.cmdline({
+          ["<Down>"] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }) },
+          ["<Up>"] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }) },
+          ["<Tab>"] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }) },
+          ["<S-Tab>"] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }) },
+        }),
         sources = cmp.config.sources({
           { name = "path" },
         }, {
