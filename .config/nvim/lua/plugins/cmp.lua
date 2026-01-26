@@ -113,6 +113,7 @@ return {
           ["<Up>"] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }) },
           ["<Tab>"] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }) },
           ["<S-Tab>"] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }) },
+          ["<CR>"] = { c = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false }) },
         }),
         sources = {
           { name = "buffer" },
@@ -125,6 +126,16 @@ return {
           ["<Up>"] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }) },
           ["<Tab>"] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }) },
           ["<S-Tab>"] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }) },
+          ["<CR>"] = {
+            c = function(fallback)
+              if cmp.visible() and cmp.get_selected_entry() then
+                cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+                vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, false, true), "n", true)
+              else
+                fallback()
+              end
+            end,
+          },
         }),
         sources = cmp.config.sources({
           { name = "path" },
