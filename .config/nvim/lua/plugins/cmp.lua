@@ -51,7 +51,35 @@ return {
             mode = "symbol_text",
             maxwidth = 50,
             ellipsis_char = "...",
+            before = function(entry, vim_item)
+              if entry.completion_item.documentation then
+                local doc = entry.completion_item.documentation
+                if type(doc) == "table" and doc.value then
+                  local cleaned = doc.value:match("^([^\n]*)")
+                  if cleaned and #cleaned > 0 then
+                    entry.completion_item.documentation = {
+                      kind = doc.kind,
+                      value = cleaned
+                    }
+                  end
+                end
+              end
+              return vim_item
+            end,
           }),
+        },
+
+        sorting = {
+          priority_weight = 2,
+          comparators = {
+            cmp.config.compare.offset,
+            cmp.config.compare.exact,
+            cmp.config.compare.score,
+            cmp.config.compare.kind,
+            cmp.config.compare.sort_text,
+            cmp.config.compare.length,
+            cmp.config.compare.order,
+          },
         },
 
         mapping = cmp.mapping.preset.insert({
