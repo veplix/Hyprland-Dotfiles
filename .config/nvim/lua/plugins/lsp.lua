@@ -82,9 +82,6 @@ return {
       end
 
       vim.lsp.config("lua_ls", {
-        cmd = { "lua-language-server" },
-        filetypes = { "lua" },
-        root_markers = { ".luarc.json", ".luarc.jsonc", ".luacheckrc", ".stylua.toml", "stylua.toml", "selene.toml", "selene.yml", ".git" },
         capabilities = capabilities,
         on_attach = on_attach,
         settings = {
@@ -105,6 +102,8 @@ return {
       })
 
       vim.lsp.config("clangd", {
+        capabilities = capabilities,
+        on_attach = on_attach,
         cmd = {
           "clangd",
           "--background-index",
@@ -114,10 +113,6 @@ return {
           "--function-arg-placeholders",
           "--fallback-style=llvm",
         },
-        filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
-        root_markers = { ".clangd", ".clang-tidy", ".clang-format", "compile_commands.json", "compile_flags.txt", "configure.ac", ".git" },
-        capabilities = capabilities,
-        on_attach = on_attach,
         init_options = {
           usePlaceholders = true,
           completeUnimported = true,
@@ -126,9 +121,6 @@ return {
       })
 
       vim.lsp.config("ts_ls", {
-        cmd = { "typescript-language-server", "--stdio" },
-        filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
-        root_markers = { "tsconfig.json", "package.json", "jsconfig.json", ".git" },
         capabilities = capabilities,
         on_attach = on_attach,
         settings = {
@@ -158,9 +150,6 @@ return {
       })
 
       vim.lsp.config("pyright", {
-        cmd = { "pyright-langserver", "--stdio" },
-        filetypes = { "python" },
-        root_markers = { "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", "Pipfile", "pyrightconfig.json", ".git" },
         capabilities = capabilities,
         on_attach = on_attach,
         settings = {
@@ -176,9 +165,6 @@ return {
       })
 
       vim.lsp.config("rust_analyzer", {
-        cmd = { "rust-analyzer" },
-        filetypes = { "rust" },
-        root_markers = { "Cargo.toml", "rust-project.json" },
         capabilities = capabilities,
         on_attach = on_attach,
         settings = {
@@ -194,65 +180,41 @@ return {
       })
 
       vim.lsp.config("csharp_ls", {
-        cmd = { "csharp-ls" },
-        filetypes = { "cs" },
-        root_markers = { "*.sln", "*.csproj", ".git" },
         capabilities = capabilities,
         on_attach = on_attach,
       })
 
       vim.lsp.config("html", {
-        cmd = { "vscode-html-language-server", "--stdio" },
-        filetypes = { "html", "templ" },
-        root_markers = { "package.json", ".git" },
         capabilities = capabilities,
         on_attach = on_attach,
       })
 
       vim.lsp.config("cssls", {
-        cmd = { "vscode-css-language-server", "--stdio" },
-        filetypes = { "css", "scss", "less" },
-        root_markers = { "package.json", ".git" },
         capabilities = capabilities,
         on_attach = on_attach,
       })
 
       vim.lsp.config("jsonls", {
-        cmd = { "vscode-json-language-server", "--stdio" },
-        filetypes = { "json", "jsonc" },
-        root_markers = { ".git" },
         capabilities = capabilities,
         on_attach = on_attach,
       })
 
       vim.lsp.config("bashls", {
-        cmd = { "bash-language-server", "start" },
-        filetypes = { "sh", "bash" },
-        root_markers = { ".git" },
         capabilities = capabilities,
         on_attach = on_attach,
       })
 
       vim.lsp.config("dockerls", {
-        cmd = { "docker-langserver", "--stdio" },
-        filetypes = { "dockerfile" },
-        root_markers = { ".git" },
         capabilities = capabilities,
         on_attach = on_attach,
       })
 
       vim.lsp.config("phpactor", {
-        cmd = { "phpactor", "language-server" },
-        filetypes = { "php" },
-        root_markers = { "composer.json", ".git" },
         capabilities = capabilities,
         on_attach = on_attach,
       })
 
       vim.lsp.config("julials", {
-        cmd = { "julia", "--startup-file=no", "--history-file=no", "-e", [[using LanguageServer; runserver()]] },
-        filetypes = { "julia" },
-        root_markers = { "Project.toml", ".git" },
         capabilities = capabilities,
         on_attach = on_attach,
       })
