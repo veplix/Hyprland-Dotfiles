@@ -77,7 +77,7 @@ return {
         vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
 
         if client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
-          vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+          vim.lsp.inlay_hint.enable(false)
         end
       end
 
@@ -126,7 +126,7 @@ return {
         settings = {
           typescript = {
             inlayHints = {
-              includeInlayParameterNameHints = "all",
+              includeInlayParameterNameHints = "none",
               includeInlayParameterNameHintsWhenArgumentMatchesName = false,
               includeInlayFunctionParameterTypeHints = true,
               includeInlayVariableTypeHints = true,
@@ -137,7 +137,7 @@ return {
           },
           javascript = {
             inlayHints = {
-              includeInlayParameterNameHints = "all",
+              includeInlayParameterNameHints = "none",
               includeInlayParameterNameHintsWhenArgumentMatchesName = false,
               includeInlayFunctionParameterTypeHints = true,
               includeInlayVariableTypeHints = true,
@@ -257,3 +257,4 @@ return {
     end,
   },
 }
+
