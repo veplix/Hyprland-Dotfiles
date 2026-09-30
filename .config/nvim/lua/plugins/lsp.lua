@@ -1,237 +1,184 @@
 return {
   {
-    "williamboman/mason.nvim",
-    config = function()
-      require("mason").setup({
-        ui = {
-          icons = {
-            package_installed = "✓",
-            package_pending = "➜",
-            package_uninstalled = "✗"
-          }
-        }
-      })
-    end,
+    "mason-org/mason.nvim",
+    cmd = "Mason",
+    opts = {
+      ui = {
+        icons = {
+          package_installed = "✓",
+          package_pending = "➜",
+          package_uninstalled = "✗",
+        },
+      },
+    },
   },
 
   {
-    "williamboman/mason-lspconfig.nvim",
-    dependencies = { "mason.nvim" },
-    config = function()
-      require("mason-lspconfig").setup({
-        ensure_installed = {
-          "pyright",
-          "ts_ls",
-          "lua_ls",
-          "clangd",
-          "csharp_ls",
-          "rust_analyzer",
-          "html",
-          "cssls",
-          "jsonls",
-          "bashls",
-          "dockerls",
-          "phpactor",
-          "julials",
-        },
-        automatic_installation = true,
-      })
-    end,
+    "folke/lazydev.nvim",
+    ft = "lua",
+    opts = {
+      library = {
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+      },
+    },
   },
 
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      "williamboman/mason-lspconfig.nvim",
+      "mason-org/mason.nvim",
+      "mason-org/mason-lspconfig.nvim",
       "hrsh7th/cmp-nvim-lsp",
     },
 
     config = function()
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities = vim.tbl_deep_extend(
-        "force",
-        capabilities,
-        require("cmp_nvim_lsp").default_capabilities()
-      )
-
-      local on_attach = function(client, bufnr)
-        local opts = { buffer = bufnr, silent = true }
-
-        vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-        vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-        vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-        vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, opts)
-        vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-        vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-        vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
-        vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-        vim.keymap.set("n", "<leader>f", function()
-          vim.lsp.buf.format({ async = true })
-        end, opts)
-        vim.keymap.set("n", "<leader>ds", vim.lsp.buf.document_symbol, opts)
-        vim.keymap.set("n", "<leader>ws", vim.lsp.buf.workspace_symbol, opts)
-        vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-        vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-        vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts)
-        vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
-
-        if client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
-          vim.lsp.inlay_hint.enable(false)
-        end
+      if vim.fn.has("nvim-0.11") == 0 then
+        vim.notify("lsp.lua: потрібен Neovim 0.11+", vim.log.levels.ERROR)
+        return
       end
 
-      vim.lsp.config("lua_ls", {
-        capabilities = capabilities,
-        on_attach = on_attach,
-        settings = {
-          Lua = {
-            runtime = { version = "LuaJIT" },
-            diagnostics = { 
-              globals = { "vim" },
-              disable = { "missing-fields" }
-            },
-            workspace = { 
-              library = vim.api.nvim_get_runtime_file("", true),
-              checkThirdParty = false,
-            },
-            telemetry = { enable = false },
-            hint = { enable = false },
-          },
-        },
-      })
+      vim.lsp.set_log_level("off")
 
-      vim.lsp.config("clangd", {
-        capabilities = capabilities,
-        on_attach = on_attach,
-        cmd = {
-          "clangd",
-          "--background-index",
-          "--clang-tidy",
-          "--header-insertion=iwyu",
-          "--completion-style=detailed",
-          "--function-arg-placeholders",
-          "--fallback-style=llvm",
-        },
-        init_options = {
-          usePlaceholders = true,
-          completeUnimported = true,
-          clangdFileStatus = true,
-        },
-      })
+      vim.o.winborder = "rounded"
 
-      vim.lsp.config("ts_ls", {
-        capabilities = capabilities,
-        on_attach = on_attach,
-        settings = {
-          typescript = {
-            inlayHints = {
-              includeInlayParameterNameHints = "none",
-              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-              includeInlayFunctionParameterTypeHints = true,
-              includeInlayVariableTypeHints = true,
-              includeInlayPropertyDeclarationTypeHints = true,
-              includeInlayFunctionLikeReturnTypeHints = true,
-              includeInlayEnumMemberValueHints = true,
-            },
-          },
-          javascript = {
-            inlayHints = {
-              includeInlayParameterNameHints = "none",
-              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-              includeInlayFunctionParameterTypeHints = true,
-              includeInlayVariableTypeHints = true,
-              includeInlayPropertyDeclarationTypeHints = true,
-              includeInlayFunctionLikeReturnTypeHints = true,
-              includeInlayEnumMemberValueHints = true,
+      local ts_hints = {
+        includeInlayParameterNameHints = "all",
+        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayVariableTypeHints = true,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayEnumMemberValueHints = true,
+      }
+
+      local servers = {
+        lua_ls = {
+          settings = {
+            Lua = {
+              runtime = { version = "LuaJIT" },
+              diagnostics = { disable = { "missing-fields" } },
+              workspace = { checkThirdParty = false },
+              completion = { callSnippet = "Replace" },
+              telemetry = { enable = false },
+              hint = { enable = false },
             },
           },
         },
-      })
 
-      vim.lsp.config("pyright", {
-        capabilities = capabilities,
-        on_attach = on_attach,
-        settings = {
-          python = {
-            analysis = {
-              typeCheckingMode = "basic",
-              autoSearchPaths = true,
-              useLibraryCodeForTypes = true,
-              diagnosticMode = "workspace",
+        clangd = {
+          cmd = {
+            "clangd",
+            "--background-index",
+            "--background-index-priority=low",
+            "-j=" .. math.max(1, math.floor((vim.uv.available_parallelism() or 4) / 2)),
+            "--clang-tidy",
+            "--header-insertion=iwyu",
+            "--completion-style=detailed",
+            "--function-arg-placeholders",
+            "--all-scopes-completion",
+            "--pch-storage=memory",
+            "--fallback-style=llvm",
+          },
+          init_options = { clangdFileStatus = true },
+        },
+
+        ts_ls = {
+          settings = {
+            typescript = { inlayHints = ts_hints },
+            javascript = { inlayHints = ts_hints },
+          },
+        },
+
+        pyright = {
+          settings = {
+            python = {
+              analysis = {
+                typeCheckingMode = "basic",
+                autoSearchPaths = true,
+                useLibraryCodeForTypes = true,
+                diagnosticMode = "openFilesOnly",
+              },
             },
           },
         },
-      })
 
-      vim.lsp.config("rust_analyzer", {
-        capabilities = capabilities,
-        on_attach = on_attach,
-        settings = {
-          ["rust-analyzer"] = {
-            checkOnSave = {
-              command = "clippy",
-            },
-            cargo = {
-              allFeatures = true,
+        rust_analyzer = {
+          settings = {
+            ["rust-analyzer"] = {
+              check = { command = "clippy" },
+              -- cargo = { allFeatures = true },
             },
           },
         },
+
+        csharp_ls = {},
+        html = {},
+        cssls = {},
+        jsonls = {},
+        bashls = {},
+        dockerls = {},
+        phpactor = {},
+        julials = {},
+      }
+
+      local capabilities = vim.tbl_deep_extend(
+        "force",
+        vim.lsp.protocol.make_client_capabilities(),
+        require("cmp_nvim_lsp").default_capabilities()
+      )
+      vim.lsp.config("*", { capabilities = capabilities })
+
+      for name, cfg in pairs(servers) do
+        vim.lsp.config(name, cfg)
+      end
+
+      require("mason-lspconfig").setup({
+        ensure_installed = vim.tbl_keys(servers),
+        automatic_enable = false,
+      })
+      vim.lsp.enable(vim.tbl_keys(servers))
+
+      vim.api.nvim_create_autocmd("LspAttach", {
+        group = vim.api.nvim_create_augroup("UserLspAttach", { clear = true }),
+        callback = function(ev)
+          local client = vim.lsp.get_client_by_id(ev.data.client_id)
+          local function map(mode, lhs, rhs, desc)
+            vim.keymap.set(mode, lhs, rhs, { buffer = ev.buf, silent = true, desc = "LSP: " .. desc })
+          end
+
+          map("n", "gd", vim.lsp.buf.definition, "definition")
+          map("n", "gD", vim.lsp.buf.declaration, "declaration")
+          map("n", "gi", vim.lsp.buf.implementation, "implementation")
+          map("n", "gt", vim.lsp.buf.type_definition, "type definition")
+          map("n", "gr", vim.lsp.buf.references, "references")
+          map("n", "K", vim.lsp.buf.hover, "hover")
+          map("i", "<C-k>", vim.lsp.buf.signature_help, "signature help")
+          map("n", "<leader>rn", vim.lsp.buf.rename, "rename")
+          map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, "code action")
+          map("n", "<leader>f", function()
+            vim.lsp.buf.format({ async = true })
+          end, "format")
+          map("n", "<leader>ds", vim.lsp.buf.document_symbol, "document symbols")
+          map("n", "<leader>ws", vim.lsp.buf.workspace_symbol, "workspace symbols")
+
+          if client and client:supports_method("textDocument/inlayHint") then
+            map("n", "<leader>th", function()
+              local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = ev.buf })
+              vim.lsp.inlay_hint.enable(not enabled, { bufnr = ev.buf })
+            end, "toggle inlay hints")
+          end
+        end,
       })
 
-      vim.lsp.config("csharp_ls", {
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      vim.lsp.config("html", {
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      vim.lsp.config("cssls", {
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      vim.lsp.config("jsonls", {
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      vim.lsp.config("bashls", {
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      vim.lsp.config("dockerls", {
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      vim.lsp.config("phpactor", {
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      vim.lsp.config("julials", {
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      vim.lsp.enable("lua_ls")
-      vim.lsp.enable("clangd")
-      vim.lsp.enable("ts_ls")
-      vim.lsp.enable("pyright")
-      vim.lsp.enable("rust_analyzer")
-      vim.lsp.enable("csharp_ls")
-      vim.lsp.enable("html")
-      vim.lsp.enable("cssls")
-      vim.lsp.enable("jsonls")
-      vim.lsp.enable("bashls")
-      vim.lsp.enable("dockerls")
-      vim.lsp.enable("phpactor")
-      vim.lsp.enable("julials")
+      vim.keymap.set("n", "[d", function()
+        vim.diagnostic.jump({ count = -1, float = true })
+      end, { desc = "Prev diagnostic" })
+      vim.keymap.set("n", "]d", function()
+        vim.diagnostic.jump({ count = 1, float = true })
+      end, { desc = "Next diagnostic" })
+      vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Diagnostic float" })
+      vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Diagnostics to loclist" })
 
       vim.diagnostic.config({
         virtual_text = false,
@@ -239,22 +186,8 @@ return {
         underline = false,
         update_in_insert = false,
         severity_sort = true,
-        float = {
-          source = "always",
-          border = "rounded",
-        },
+        float = { source = true },
       })
-
-      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-        vim.lsp.handlers.hover,
-        { border = "rounded" }
-      )
-
-      vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
-        vim.lsp.handlers.signature_help,
-        { border = "rounded" }
-      )
     end,
   },
 }
-
