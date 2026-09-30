@@ -9,7 +9,7 @@ return {
       "hrsh7th/cmp-cmdline",
       "onsails/lspkind.nvim",
       "saadparwaiz1/cmp_luasnip",
-      "L3MON4D3/LuaSnip",
+      { "L3MON4D3/LuaSnip", version = "v2.*" },
       "rafamadriz/friendly-snippets",
     },
     config = function()
@@ -26,10 +26,21 @@ return {
       })
 
       cmp.setup({
+        enabled = function()
+          return vim.bo.buftype ~= "prompt"
+        end,
+
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
           end,
+        },
+
+        performance = {
+          debounce = 30,
+          throttle = 20,
+          fetching_timeout = 300,
+          max_view_entries = 30,
         },
 
         window = {
@@ -43,61 +54,23 @@ return {
           }),
         },
 
-
-
         formatting = {
           fields = { "abbr", "kind" },
           format = lspkind.cmp_format({
             mode = "symbol_text",
             maxwidth = 50,
             ellipsis_char = "...",
-            before = function(entry, vim_item)
-              if entry.completion_item.documentation then
-                local doc = entry.completion_item.documentation
-                if type(doc) == "table" and doc.value then
-                  local cleaned = doc.value:match("^([^\n]*)")
-                  if cleaned and #cleaned > 0 then
-                    entry.completion_item.documentation = {
-                      kind = doc.kind,
-                      value = cleaned
-                    }
-                  end
-                end
-              end
-              return vim_item
-            end,
           }),
         },
 
-        sorting = {
-          priority_weight = 2,
-          comparators = {
-            cmp.config.compare.offset,
-            cmp.config.compare.exact,
-            cmp.config.compare.score,
-            cmp.config.compare.kind,
-            cmp.config.compare.sort_text,
-            cmp.config.compare.length,
-            cmp.config.compare.order,
-          },
-        },
-
         mapping = cmp.mapping.preset.insert({
-
           ["<CR>"] = cmp.mapping.confirm({
             behavior = cmp.ConfirmBehavior.Insert,
             select = false,
           }),
 
-          ["<Esc>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.close()
-            end
-            fallback()
-          end, { "i", "s" }),
-
           ["<C-Space>"] = cmp.mapping.complete(),
-          ["<C-e>"] = cmp.mapping.close(),
+          ["<C-e>"] = cmp.mapping.abort(),
 
           ["<C-b>"] = cmp.mapping.scroll_docs(-4),
           ["<C-f>"] = cmp.mapping.scroll_docs(4),
@@ -117,13 +90,30 @@ return {
               fallback()
             end
           end, { "i", "s" }),
+
+          ["<C-l>"] = cmp.mapping(function(fallback)
+            if luasnip.locally_jumpable(1) then
+              luasnip.jump(1)
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+          ["<M-h>"] = cmp.mapping(function(fallback)
+            if luasnip.locally_jumpable(-1) then
+              luasnip.jump(-1)
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
         }),
 
         sources = cmp.config.sources({
+          { name = "lazydev", group_index = 0 },
           { name = "nvim_lsp", priority = 1000 },
           { name = "luasnip", priority = 750 },
-          { name = "buffer", priority = 500 },
           { name = "path", priority = 250 },
+        }, {
+          { name = "buffer", keyword_length = 3 },
         }),
 
         completion = {
