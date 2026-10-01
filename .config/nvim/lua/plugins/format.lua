@@ -25,18 +25,15 @@ return {
         html = { "prettierd", "prettier", stop_after_first = true },
         css = { "prettierd", "prettier", stop_after_first = true },
         sh = { "shfmt" },
-        -- rust, c, cpp, cs, php: форматує LSP через fallback
       },
       format_on_save = function(bufnr)
         if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
           return
         end
-        -- prettierd при першому запуску (холодний старт node) часто не вкладається в 500 мс
         return { timeout_ms = 2000, lsp_format = "fallback" }
       end,
     },
     init = function()
-      -- init виконується на старті, тому :FormatToggle доступна одразу
       vim.api.nvim_create_user_command("FormatToggle", function()
         vim.g.disable_autoformat = not vim.g.disable_autoformat
         vim.notify("Autoformat: " .. (vim.g.disable_autoformat and "OFF" or "ON"))
