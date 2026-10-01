@@ -34,7 +34,7 @@ return {
 
     config = function()
       if vim.fn.has("nvim-0.11") == 0 then
-        vim.notify("lsp.lua: потрібен Neovim 0.11+", vim.log.levels.ERROR)
+        vim.notify("lsp.lua: needed Neovim 0.11+", vim.log.levels.ERROR)
         return
       end
 
